@@ -1,0 +1,13 @@
+node_modules/
+**/.preview/
+.env
+.env.*
+!.env.example
+*.log
+*.tgz
+*.zip
+config.json
+cachedAccessories*
+persist/
+Thumbs.db
+.DS_Store

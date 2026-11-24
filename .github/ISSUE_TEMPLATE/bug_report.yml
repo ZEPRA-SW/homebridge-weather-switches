@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible problem with Homebridge Weather Switches ZEPRA.
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Remove passwords, access tokens, HomeKit pairing codes, precise location coordinates and other private details before posting. Share only the configuration fields needed to reproduce the problem.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior, expected behavior and steps to reproduce it.
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions and installation
+      description: Include the plugin, Homebridge, Homebridge UI, Node.js and operating system versions. For local readings, include the Shelly model and firmware version.
+    validations:
+      required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: Data source involved
+      multiple: true
+      options:
+        - Open-Meteo
+        - DWD observations
+        - DWD MOSMIX forecasts
+        - Local Shelly WS90
+        - Configuration or status interface
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant configuration
+      description: Include the affected switch conditions and failure behavior. Redact private values.
+      render: json
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or status details
+      description: Include the affected time period and time zone, data age and selected source. Redact private values.
+      render: text

@@ -1,0 +1,61 @@
+{
+  "platform": "WeatherSwitches",
+  "name": "Berlin weather",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "pollInterval": 300,
+  "staleAfter": 1800,
+  "showSensors": true,
+  "switches": [
+    {
+      "id": "windwarnung",
+      "name": "Wind warning",
+      "mode": "any",
+      "matchedState": true,
+      "stableForSeconds": 0,
+      "failureState": "on",
+      "conditions": [
+        {
+          "metric": "windSpeed",
+          "operator": "above",
+          "threshold": 30,
+          "releaseThreshold": 25
+        },
+        {
+          "metric": "windGusts",
+          "operator": "above",
+          "threshold": 50,
+          "releaseThreshold": 40
+        }
+      ]
+    },
+    {
+      "id": "warm-und-feucht",
+      "name": "Warm and humid",
+      "mode": "all",
+      "matchedState": true,
+      "stableForSeconds": 60,
+      "failureState": "hold",
+      "conditions": [
+        {
+          "metric": "temperature",
+          "operator": "above",
+          "threshold": 25,
+          "releaseThreshold": 24
+        },
+        {
+          "metric": "humidity",
+          "operator": "above",
+          "threshold": 70,
+          "releaseThreshold": 65
+        }
+      ]
+    }
+  ],
+  "provider": "open-meteo",
+  "showLightSensor": false,
+  "language": "en",
+  "enableHistory": false,
+  "historyRetentionDays": 365,
+  "timeZone": "Europe/Berlin"
+}

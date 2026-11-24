@@ -1,0 +1,72 @@
+{
+  "name": "homebridge-weather-switches",
+  "version": "0.6.5",
+  "description": "Homebridge Weather Switches ZEPRA: virtual HomeKit switches with Open-Meteo, DWD observations and forecasts, and optional local Shelly WS90 measurements.",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": [
+    "homebridge-plugin",
+    "homekit",
+    "weather",
+    "weather-station",
+    "forecast",
+    "dwd",
+    "open-meteo",
+    "shelly",
+    "ws90",
+    "bthome",
+    "supports-hap",
+    "zepra"
+  ],
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0 || ^26.0.0",
+    "homebridge": "^1.8.0 || ^2.0.0"
+  },
+  "dependencies": {
+    "@homebridge/plugin-ui-utils": "2.2.7",
+    "fflate": "0.8.3",
+    "fast-xml-parser": "5.11.2"
+  },
+  "peerDependencies": {
+    "homebridge": "^1.8.0 || ^2.0.0"
+  },
+  "devDependencies": {
+    "homebridge": "1.11.1",
+    "homebridge-v2": "npm:homebridge@2.5.0",
+    "jsdom": "26.1.0"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.js"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "homebridge-ui",
+    "config.schema.json",
+    "README.md",
+    "FORECAST.md",
+    "TEST-REPORT.md",
+    "example.config.json",
+    "example.forecast.config.json",
+    "LICENSE",
+    "example.local.config.json",
+    "RELEASE-NOTES.md",
+    "VERIFICATION.md"
+  ],
+  "displayName": "Homebridge Weather Switches ZEPRA",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "author": "ZEPRA-SW",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZEPRA-SW/homebridge-weather-switches.git"
+  },
+  "homepage": "https://github.com/ZEPRA-SW/homebridge-weather-switches#readme",
+  "bugs": {
+    "url": "https://github.com/ZEPRA-SW/homebridge-weather-switches/issues",
+    "email": "pm@zepra-app.de"
+  }
+}

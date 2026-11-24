@@ -1,0 +1,63 @@
+{
+  "platform": "WeatherSwitches",
+  "name": "Berlin weather",
+  "language": "en",
+  "provider": "dwd",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "dwdStation": "",
+  "dwdForecastStation": "",
+  "dwdMaxDistance": 100,
+  "pollInterval": 300,
+  "staleAfter": 7200,
+  "forecastRefresh": 1800,
+  "forecastStaleAfter": 43200,
+  "showSensors": true,
+  "showLightSensor": false,
+  "enableHistory": false,
+  "historyRetentionDays": 365,
+  "switches": [
+    {
+      "id": "wind-local-backup",
+      "name": "Wind with local station",
+      "mode": "any",
+      "matchedState": true,
+      "failureState": "on",
+      "stableForSeconds": 0,
+      "conditions": [
+        {
+          "source": "current",
+          "dataSource": "prefer-local",
+          "metric": "windSpeed",
+          "operator": "above",
+          "threshold": 30,
+          "releaseThreshold": 25
+        },
+        {
+          "source": "forecast",
+          "dataSource": "weather",
+          "metric": "windGusts",
+          "aggregation": "max",
+          "forecastStartHours": 0,
+          "forecastEndHours": 6,
+          "operator": "above",
+          "threshold": 60,
+          "releaseThreshold": 50
+        }
+      ]
+    }
+  ],
+  "localStation": {
+    "enabled": false,
+    "host": "192.0.2.10",
+    "shellyDeviceId": "shelly-test-aabbccddeeff",
+    "deviceComponent": "bthomedevice:200",
+    "password": "",
+    "pollInterval": 15,
+    "staleAfter": 120,
+    "temperatureComponent": "207",
+    "windSpeedComponent": "213",
+    "windGustsComponent": "218"
+  },
+  "timeZone": "Europe/Berlin"
+}

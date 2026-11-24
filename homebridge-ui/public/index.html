@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="style.css">
+<main id="app" lang="en">
+  <header><div><p class="eyebrow"><span>Homebridge Weather Switches ZEPRA</span> <small>0.6.5</small></p><h1 data-i18n="Standort und Schalter">Location and switches</h1></div><nav class="view-tabs"><button id="view-settings" type="button" class="active-tab" data-i18n="Einstellungen">Settings</button><button id="view-status" type="button" data-i18n="Status">Status</button></nav></header>
+  <section id="settings-view">
+  <p id="intro" data-i18n="Weltweite Wetterregeln für virtuelle HomeKit-Schalter. Jeden Schalter einzeln ausklappen, Bedingungen ergänzen und mit den Pfeilen sortieren.">Worldwide weather rules for virtual HomeKit switches. Expand each switch, add conditions and reorder using the arrows.</p>
+  <p class="hint" data-i18n="Open-Meteo verwendet Wettermodelle, der DWD tatsächliche Stationsbeobachtungen. Sensoranzeigen sind optional. Schalter folgen automatisch ihren Regeln und sind nicht manuell bedienbar.">Open-Meteo uses weather models; DWD uses actual station observations. Sensor displays are optional. Switches follow their rules automatically and cannot be controlled manually.</p>
+  <p id="message" role="alert"></p><form id="settings"></form>
+  <button id="add-device" type="button" data-i18n="Wetterschalter hinzufügen">Add weather switch</button>
+  <p id="save-hint" data-i18n="Änderungen mit dem Homebridge-Speichern-Knopf übernehmen und Homebridge neu starten. Dauerhafte IDs beibehalten.">Apply changes using the Homebridge Save button, then restart Homebridge. Keep permanent IDs.</p>
+  <p class="hint"><span data-i18n="Wetterdaten von">Weather data by</span> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. <span data-i18n="Daraus werden Regelzustände abgeleitet. Kostenlose API nur für nicht kommerzielle Nutzung, einschließlich privater Hausautomation. Koordinaten werden an Open-Meteo übermittelt.">Rule states are derived from these data. Free API for non-commercial use only, including personal home automation. Coordinates are sent to Open-Meteo.</span></p>
+  <p class="hint"><span data-i18n="Datenbasis bei DWD-Auswahl:">Data source when DWD is selected:</span> <a href="https://opendata.dwd.de/" target="_blank" rel="noopener">Deutscher Wetterdienst</a>, CC BY 4.0. <span data-i18n="Stationskatalog gefiltert, Beobachtungen in Regelzustände und optional in geschätzte Luxwerte umgerechnet.">Station catalogue filtered; observations converted into rule states and optionally estimated lux values.</span></p>
+  </section>
+  <section id="status-view" hidden></section>
+</main>
+<script src="theme.js"></script><script src="i18n.js"></script><script src="config.js"></script><script src="stations.js"></script><script src="station.js"></script><script src="history-view.js"></script><script src="status.js"></script><script src="app.js"></script>

@@ -1,0 +1,448 @@
+{
+  "pluginAlias": "WeatherSwitches",
+  "pluginType": "platform",
+  "singular": true,
+  "customUi": true,
+  "schema": {
+    "type": "object",
+    "required": [
+      "latitude",
+      "longitude",
+      "switches"
+    ],
+    "properties": {
+      "name": {
+        "title": "Name des Wetterstandorts",
+        "type": "string",
+        "default": "Weather switches"
+      },
+      "language": {
+        "title": "Sprache",
+        "type": "string",
+        "enum": [
+          "en",
+          "de",
+          "fr",
+          "es"
+        ],
+        "enumNames": [
+          "English",
+          "Deutsch",
+          "Français",
+          "Español"
+        ],
+        "default": "en"
+      },
+      "provider": {
+        "title": "Wetterdatenquelle",
+        "type": "string",
+        "enum": [
+          "open-meteo",
+          "dwd"
+        ],
+        "enumNames": [
+          "Open-Meteo – weltweite Modelldaten",
+          "DWD – Stationsbeobachtungen in Deutschland"
+        ],
+        "default": "dwd"
+      },
+      "openMeteoPrivateConsent": {
+        "title": "Ich bestätige die private, nicht gewerbliche Nutzung dieses Open-Meteo-Zugangs",
+        "type": "boolean",
+        "default": false,
+        "description": "Der in diesem Plugin angebotene kostenlose Open-Meteo-Zugang ist nur für private, nicht gewerbliche Nutzung vorgesehen. Ohne Zustimmung erfolgen keine Open-Meteo-Abfragen. Der Entwickler überprüft die tatsächliche Nutzung nicht und billigt keine vertragswidrige Nutzung. Für die Einhaltung der Bedingungen sind Sie verantwortlich. Gesetzliche Haftungsregeln bleiben unberührt."
+      },
+      "_openMeteoConsentVersion": {
+        "type": "string",
+        "notitle": true,
+        "condition": {
+          "functionBody": "return false"
+        }
+      },
+      "latitude": {
+        "title": "Breitengrad",
+        "type": "number",
+        "minimum": -90,
+        "maximum": 90,
+        "description": "Dezimalgrad: Nord positiv, Süd negativ. Beispiel Berlin: 52.52.",
+        "default": 52.52
+      },
+      "longitude": {
+        "title": "Längengrad",
+        "type": "number",
+        "minimum": -180,
+        "maximum": 180,
+        "description": "Dezimalgrad: Ost positiv, West negativ. Beispiel Berlin: 13.41.",
+        "default": 13.405
+      },
+      "timeZone": {
+        "title": "Zeitzone",
+        "type": "string",
+        "default": "Europe/Berlin",
+        "description": "IANA-Zeitzone für Status und Diagramme, zum Beispiel Europe/Berlin oder America/New_York. Gespeicherte Zeitstempel und CSV bleiben in UTC."
+      },
+      "pollInterval": {
+        "title": "Abfrageintervall (Sekunden)",
+        "type": "number",
+        "minimum": 60,
+        "maximum": 3600,
+        "default": 300
+      },
+      "staleAfter": {
+        "title": "Maximales Datenalter (Sekunden)",
+        "type": "number",
+        "minimum": 900,
+        "maximum": 86400,
+        "default": 1800,
+        "description": "Alter des Wetterzeitstempels. Empfohlen: Open-Meteo 1800, stündliche DWD-Berichte 7200 Sekunden. Danach greift das Fehlerverhalten."
+      },
+      "dwdStation": {
+        "title": "DWD-Stationskennung (optional)",
+        "type": "string",
+        "default": "",
+        "description": "Leer: nächste Station aus dem Katalog vom 02.11.2026. Sonst fünfstellige POI-/WMO-Kennung (nicht die CDC-ID). Gilt nur für DWD."
+      },
+      "dwdForecastStation": {
+        "title": "MOSMIX-Vorhersagepunkt (optional)",
+        "type": "string",
+        "default": "",
+        "description": "Leer: Kennung der ausgewählten DWD-Beobachtungsstation. Alternativ fünfstellige MOSMIX-Kennung. Vorhersagepunkt und Beobachtungsstation sind getrennte Datenquellen. Bei fehlender MOSMIX-Datei keine andere Station als Ersatz."
+      },
+      "forecastRefresh": {
+        "title": "Prognose-Abfrageintervall (Sekunden)",
+        "type": "number",
+        "minimum": 900,
+        "maximum": 21600,
+        "default": 1800,
+        "description": "Nur DWD-MOSMIX und nur bei Prognosebedingungen. Open-Meteo-Prognosen kommen gemeinsam mit der normalen Wetterabfrage."
+      },
+      "forecastStaleAfter": {
+        "title": "Maximales Prognosealter (Sekunden)",
+        "type": "number",
+        "minimum": 3600,
+        "maximum": 86400,
+        "default": 3600,
+        "description": "DWD: Alter der Ausgabezeit, empfohlen 43200 Sekunden. Open-Meteo: Alter des Abrufs, empfohlen 3600 Sekunden; die API liefert keine Modell-Ausgabezeit. Fehlende oder zu alte Prognosen verwenden das Fehlerverhalten."
+      },
+      "dwdMaxDistance": {
+        "title": "Maximale DWD-Stationsentfernung (km)",
+        "type": "number",
+        "minimum": 1,
+        "maximum": 500,
+        "default": 100,
+        "description": "Gilt auch für eine manuell gewählte Station. Kein automatischer Wechsel der Datenquelle bei Ausfall."
+      },
+      "showSensors": {
+        "title": "Temperatur und Luftfeuchtigkeit in HomeKit anzeigen",
+        "type": "boolean",
+        "default": true
+      },
+      "enableHistory": {
+        "title": "Verlauf lokal aufzeichnen",
+        "type": "boolean",
+        "default": false,
+        "description": "Standardmäßig aus. Ohne Aufzeichnung bleibt die aktuelle Statusanzeige verfügbar. Vorhandene Historie wird beim Ausschalten nicht gelöscht."
+      },
+      "historyRetentionDays": {
+        "title": "Aufbewahrung (Tage)",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 366,
+        "default": 365,
+        "description": "Nur bei eingeschalteter Aufzeichnung: ältere Daten automatisch löschen. Standard 365 Tage. Rohwerte bis 7 Tage, danach Stundenmittel. Kürzere Frist bedeutet weniger Daten in Monats-/Jahresansichten. Änderungen nach Speichern und Neustart wirksam."
+      },
+      "showLightSensor": {
+        "title": "Geschätzte Beleuchtungsstärke in HomeKit anzeigen",
+        "type": "boolean",
+        "default": false,
+        "description": "Nur Open-Meteo: grobe Tageslichtschätzung aus modellierter Solarstrahlung × 105 lm/W, keine Luxmessung. Für DWD ist der Lichtsensor deaktiviert."
+      },
+      "switches": {
+        "title": "Wetterschalter",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "conditions"
+          ],
+          "properties": {
+            "id": {
+              "title": "Dauerhafte eindeutige ID",
+              "type": "string",
+              "minLength": 1,
+              "description": "Später beibehalten, damit HomeKit-Zuordnungen erhalten bleiben."
+            },
+            "name": {
+              "title": "Name in Apple Home",
+              "type": "string",
+              "minLength": 1
+            },
+            "mode": {
+              "title": "Bedingungen verknüpfen",
+              "type": "string",
+              "enum": [
+                "all",
+                "any"
+              ],
+              "enumNames": [
+                "Alle müssen zutreffen (UND)",
+                "Mindestens eine muss zutreffen (ODER)"
+              ],
+              "default": "all"
+            },
+            "matchedState": {
+              "title": "Bei erfüllter Regel einschalten",
+              "type": "boolean",
+              "default": true,
+              "description": "Deaktiviert: Bei erfüllter Regel AUS, andernfalls EIN."
+            },
+            "stableForSeconds": {
+              "title": "Stabilisierungszeit (Sekunden)",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 86400,
+              "default": 0,
+              "description": "Der neue Zielzustand muss so lange durchgehend gelten. Gilt für beide Schaltrichtungen; Fehlerverhalten wirkt sofort."
+            },
+            "failureState": {
+              "title": "Bei veralteten oder fehlenden Daten",
+              "type": "string",
+              "enum": [
+                "hold",
+                "on",
+                "off"
+              ],
+              "enumNames": [
+                "Letzten Zustand halten; Kommunikationsfehler melden",
+                "Sofort einschalten",
+                "Sofort ausschalten"
+              ],
+              "default": "hold"
+            },
+            "conditions": {
+              "title": "Bedingungen",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "metric",
+                  "operator",
+                  "threshold"
+                ],
+                "properties": {
+                  "source": {
+                    "title": "Daten für diese Bedingung",
+                    "type": "string",
+                    "enum": [
+                      "current",
+                      "forecast"
+                    ],
+                    "enumNames": [
+                      "Aktuell",
+                      "Vorhersage"
+                    ],
+                    "default": "current"
+                  },
+                  "dataSource": {
+                    "title": "Messwertquelle",
+                    "type": "string",
+                    "enum": [
+                      "weather",
+                      "local",
+                      "prefer-local"
+                    ],
+                    "enumNames": [
+                      "Wetterdienst",
+                      "Lokale Station",
+                      "Lokal bevorzugen, Wetterdienst als Ersatz"
+                    ],
+                    "default": "weather",
+                    "description": "Ersatz nur bei fehlendem oder veraltetem lokalen Wert. Beide Quellen über getrennte Bedingungen mit UND/ODER kombinieren."
+                  },
+                  "metric": {
+                    "title": "Wetterwert",
+                    "type": "string",
+                    "enum": [
+                      "temperature",
+                      "humidity",
+                      "windSpeed",
+                      "windGusts",
+                      "cloudCover",
+                      "precipitation",
+                      "illuminance",
+                      "raining"
+                    ],
+                    "enumNames": [
+                      "Temperatur (°C, 2 m)",
+                      "Relative Luftfeuchtigkeit (%, 2 m)",
+                      "Windgeschwindigkeit (km/h, 10 m)",
+                      "Windböen (km/h, 10 m)",
+                      "Gesamtbewölkung (%)",
+                      "Niederschlag (mm, letzte Stunde)",
+                      "Beleuchtungsstärke (lux)",
+                      "Regen erkannt (0/1)"
+                    ],
+                    "description": "Niederschlag: Menge in mm je Stunde. Prognosewerte gelten für die Stunde vor dem Zeitstempel; Zeitfenster werden auf diese Stunden ausgerichtet."
+                  },
+                  "aggregation": {
+                    "title": "Vorhersage auswerten",
+                    "type": "string",
+                    "enum": [
+                      "max",
+                      "min",
+                      "mean",
+                      "at",
+                      "sum"
+                    ],
+                    "enumNames": [
+                      "Maximum im Zeitfenster",
+                      "Minimum im Zeitfenster",
+                      "Mittelwert im Zeitfenster",
+                      "Stundenwert am Zielzeitpunkt",
+                      "Summe im Zeitfenster (nur Niederschlag)"
+                    ],
+                    "default": "max"
+                  },
+                  "forecastStartHours": {
+                    "title": "Beginn (Stunden voraus)",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 71,
+                    "default": 0,
+                    "description": "Beginn des rollierenden Zukunftsfensters ab jetzt. Beim Zielzeitpunkt nicht verwendet."
+                  },
+                  "forecastEndHours": {
+                    "title": "Ende/Zeitpunkt (Stunden voraus)",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 72,
+                    "default": 6,
+                    "description": "Stundenwerte im Fenster werden ausgewertet. Beim Zielzeitpunkt wird der nächste volle UTC-Stundenwert am oder nach dem Ziel verwendet (bis knapp eine Stunde später). Keine Minuteninterpolation. Böen beziehen sich auf die Stunde vor ihrem Zeitstempel."
+                  },
+                  "operator": {
+                    "title": "Vergleich",
+                    "type": "string",
+                    "enum": [
+                      "above",
+                      "below"
+                    ],
+                    "enumNames": [
+                      "Mindestens (≥)",
+                      "Höchstens (≤)"
+                    ]
+                  },
+                  "threshold": {
+                    "title": "Aktivierungsschwelle",
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 1000000
+                  },
+                  "releaseThreshold": {
+                    "title": "Rückschaltschwelle",
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 1000000,
+                    "description": "Bei mindestens: kleiner oder gleich der Aktivierungsschwelle. Beispiel Wind: aktiv ab 30, Rückschaltschwelle 25 → inaktiv erst unter 25 km/h. Bei höchstens: Rückschaltschwelle größer oder gleich, Rückschalten erst darüber."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "localStation": {
+        "title": "Lokale Shelly-Wetterstation",
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "title": "Shelly-Wetterstation aktivieren",
+            "type": "boolean",
+            "default": false
+          },
+          "host": {
+            "title": "Shelly-IP-Adresse oder Hostname",
+            "type": "string",
+            "default": ""
+          },
+          "shellyDeviceId": {
+            "title": "Shelly-Hardware-ID",
+            "type": "string",
+            "default": "",
+            "description": "Hardware-ID des Shelly-Hosts, nicht die ID der Wetterstation."
+          },
+          "deviceComponent": {
+            "title": "BTHome-Geräte-ID",
+            "type": "string",
+            "default": "bthomedevice:200",
+            "description": "Zum Beispiel 200 oder bthomedevice:200. Sensor-IDs werden separat zugeordnet."
+          },
+          "password": {
+            "title": "Shelly-Passwort (optional)",
+            "type": "string",
+            "format": "password",
+            "default": ""
+          },
+          "pollInterval": {
+            "title": "Stations-Abfrageintervall",
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 300,
+            "default": 15
+          },
+          "staleAfter": {
+            "title": "Maximales Stationsdatenalter",
+            "type": "integer",
+            "minimum": 30,
+            "maximum": 3600,
+            "default": 120
+          },
+          "temperatureComponent": {
+            "title": "Temperatursensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          },
+          "humidityComponent": {
+            "title": "Feuchtesensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          },
+          "windSpeedComponent": {
+            "title": "Windsensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          },
+          "windGustsComponent": {
+            "title": "Böensensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          },
+          "illuminanceComponent": {
+            "title": "Lichtsensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          },
+          "rainingComponent": {
+            "title": "Regenstatus-Sensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          },
+          "precipitationRawComponent": {
+            "title": "Niederschlags-Sensor-ID (optional)",
+            "type": "string",
+            "default": "",
+            "description": "Leer für automatische Zuordnung; zum Beispiel 207 oder bthomesensor:207."
+          }
+        }
+      }
+    }
+  }
+}

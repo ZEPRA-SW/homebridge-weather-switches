@@ -1,0 +1,67 @@
+{
+  "platform": "WeatherSwitches",
+  "name": "Berlin weather",
+  "language": "en",
+  "provider": "dwd",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "dwdStation": "",
+  "dwdForecastStation": "",
+  "dwdMaxDistance": 100,
+  "pollInterval": 300,
+  "staleAfter": 7200,
+  "forecastRefresh": 1800,
+  "forecastStaleAfter": 43200,
+  "showSensors": true,
+  "showLightSensor": false,
+  "enableHistory": false,
+  "historyRetentionDays": 365,
+  "switches": [
+    {
+      "id": "wind-aktuell-oder-bald",
+      "name": "Wind now or soon",
+      "mode": "any",
+      "matchedState": true,
+      "stableForSeconds": 0,
+      "failureState": "on",
+      "conditions": [
+        {
+          "source": "current",
+          "metric": "windSpeed",
+          "operator": "above",
+          "threshold": 30,
+          "releaseThreshold": 25
+        },
+        {
+          "source": "forecast",
+          "metric": "windGusts",
+          "aggregation": "max",
+          "forecastStartHours": 0,
+          "forecastEndHours": 6,
+          "operator": "above",
+          "threshold": 50,
+          "releaseThreshold": 40
+        }
+      ]
+    },
+    {
+      "id": "stark-bewoelkt-bald",
+      "name": "Heavy cloud cover in the next 6 hours",
+      "mode": "all",
+      "failureState": "hold",
+      "conditions": [
+        {
+          "source": "forecast",
+          "metric": "cloudCover",
+          "aggregation": "mean",
+          "forecastStartHours": 0,
+          "forecastEndHours": 6,
+          "operator": "above",
+          "threshold": 80,
+          "releaseThreshold": 65
+        }
+      ]
+    }
+  ],
+  "timeZone": "Europe/Berlin"
+}
