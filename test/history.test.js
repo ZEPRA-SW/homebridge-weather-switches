@@ -6,7 +6,9 @@ const {startStatusServer,requestStatus}=require('../lib/status-ipc');
 const config={provider:'open-meteo',latitude:52.52,longitude:13.41,dwdMaxDistance:100,enableHistory:true,historyRetentionDays:365};
 const DAY=86400000,now=Math.floor(Date.now()/3600000)*3600000;
 function tmp(t){
-  const root=path.resolve(__dirname,'../.preview');fs.mkdirSync(root,{recursive:true});const dir=fs.mkdtempSync(path.join(root,'history-test-'));
+  // Unix-domain sockets have a short path limit; a deeply nested CI checkout
+  // must not become part of the temporary Homebridge storage path.
+  const root=process.platform==='win32'?path.resolve(__dirname,'../.preview'):path.resolve(os.tmpdir());fs.mkdirSync(root,{recursive:true});const dir=fs.mkdtempSync(path.join(root,'weather-history-'));
   t.after(()=>{if(!dir.startsWith(root+path.sep))throw Error('Unexpected test path');fs.rmSync(dir,{recursive:true,force:true});});return dir;
 }
 const sample=(time=now)=>({time,source:'Open-Meteo',values:{temperature:12,humidity:70,windSpeed:30,windGusts:50}});
